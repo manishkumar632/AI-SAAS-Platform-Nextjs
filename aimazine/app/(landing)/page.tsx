@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/button"
-import Link from "next/link"
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const LandingPage = () => {
     return (
@@ -12,9 +12,8 @@ const LandingPage = () => {
                 <Link href="/sign-up">
                     <Button>Sign Up</Button>
                 </Link>
-
             </div>
         </div>
-    )
-}
-export default LandingPage
+    );
+};
+export default LandingPage;

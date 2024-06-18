@@ -1,0 +1,55 @@
+.markdown {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    font-size: 16px;
+    color: #d4d4d4;
+    background-color: #1e1e1e;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.markdown a {
+    color: #569cd6;
+    text-decoration: none;
+}
+
+.markdown a:hover {
+    text-decoration: underline;
+}
+
+.markdown pre {
+    background: #1e1e1e;
+    padding: 10px;
+    border-radius: 4px;
+    overflow-x: auto;
+}
+
+.markdown code {
+    font-family: "Source Code Pro", monospace;
+    background: #1e1e1e;
+    color: #d4d4d4;
+    padding: 2px 4px;
+    border-radius: 4px;
+}
+
+.markdown blockquote {
+    margin: 0 0 1rem;
+    padding: 0.5rem 1rem;
+    color: #6a9955;
+    border-left: 0.25rem solid #6a9955;
+    background-color: #252526;
+}
+
+.markdown h1, .markdown h2, .markdown h3, .markdown h4, .markdown h5, .markdown h6 {
+    color: #dcdcaa;
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+}
+
+.markdown ul, .markdown ol {
+    padding-left: 2em;
+}
+
+.markdown ul li, .markdown ol li {
+    margin-bottom: 0.5em;
+}
