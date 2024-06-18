@@ -2,9 +2,11 @@
 import { Bot, Loader2, Send, User2, Copy } from "lucide-react"; // Import the Copy icon
 import { useChat } from "@ai-sdk/react";
 import Markdown from "../component/markdown";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Home() {
+    const [chatDivHeight, setChatDivHeight] = useState(0);
+    const [chatDivWidth, setChatDivWidth] = useState(0);
     const [copiedMessage, setCopiedMessage] = useState(""); // State to track copied message
     const {
         messages,
@@ -31,10 +33,29 @@ export default function Home() {
             });
     };
 
+    useEffect(() => {
+        const userProfileHeight =
+            document.getElementsByClassName("userProfile")[0]?.clientHeight;
+        const windowInnerHeight = window.innerHeight;
+        const windowInnerWidth = window.innerWidth;
+        const sidebarWidth =
+            document.getElementsByClassName("dashboardSidebar")[0]?.clientWidth;
+
+        setChatDivHeight(4 + windowInnerHeight - userProfileHeight * 2);
+        setChatDivWidth(windowInnerWidth - sidebarWidth);
+    }, []);
+
     return (
-        <main className="flex min-h-screen flex-col items-center p-24">
-            {RenderForm()}
-            {RenderMessages()}
+        <main
+            className="flex flex-col items-center inset-0 bg-[#8BE0DB]/10 w-full"
+            style={{ height: `${chatDivHeight}px`, width: `${chatDivWidth}px` }}
+        >
+            <div className="flex flex-col w-full overflow-y-auto mb-20 p-4">
+                {RenderMessages()}
+            </div>
+            <div className="w-full fixed bottom-0 flex justify-center">
+                {RenderForm()}
+            </div>
         </main>
     );
 
@@ -49,21 +70,24 @@ export default function Home() {
                         }
                     });
                 }}
-                className="w-full flex flex-row gap-2 items-center h-full"
+                className="w-[70%] justify-center gap-2 items-center bg-white p-2 rounded-t-md shadow-lg flex mb-2"
             >
-                <input
-                    type="text"
+                <textarea
                     value={input}
-                    onChange={handleInputChange}
+                    onChange={(e) => {
+                        handleInputChange(e);
+                        e.target.style.height = "auto"; // Reset the height
+                        e.target.style.height = e.target.scrollHeight + "px"; // Set the height to the scroll height
+                    }}
                     placeholder={
                         isLoading ? "Generating..." : "Ask me anything..."
                     }
                     disabled={isLoading}
-                    className="border-b border-dashed outline-none w-full px-4 py-2 text-[#0842A0] placeholder:text-[#0842A099] text-right focus:placeholder-transparent disabled:bg-transparent"
+                    className="border-b border-dashed outline-none px-4 py-2 text-[#0842A0] placeholder:text-[#0842A099] text-left focus:placeholder-transparent disabled:bg-transparent rounded-md max-h-32 overflow-x-hidden w-full"
                 />
                 <button
                     type="submit"
-                    className="rounded-full shadow-md border flex flex-row"
+                    className="rounded-full shadow-md border flex flex-row ml-2"
                 >
                     {isLoading ? (
                         <Loader2
@@ -82,14 +106,14 @@ export default function Home() {
         return (
             <div
                 id="chatbox"
-                className="flex flex-col-reverse w-full text-left mt-4 gap-4 whitespace-pre-wrap"
+                className="flex flex-col w-full text-left mt-4 gap-4 whitespace-pre-wrap"
             >
                 {messages.map((message, index) => {
                     return (
                         <div
                             key={index}
                             className={`shadow-md rounded-md ml-10 relative ${
-                                message.role === "user" ? "bg-stone-300" : ""
+                                message.role === "user" ? "bg-[#111827]/10" : ""
                             }`}
                         >
                             <Markdown text={message.content} />
