@@ -3,8 +3,10 @@ import { Bot, Loader2, Send, User2, Copy } from "lucide-react"; // Import the Co
 import { useChat } from "@ai-sdk/react";
 import Markdown from "../component/markdown";
 import { useState, useEffect } from "react";
+import Image from "next/image";
 
 export default function Home() {
+    const [chatStarted, setChatStarted] = useState(false);
     const [chatDivHeight, setChatDivHeight] = useState(0);
     const [chatDivWidth, setChatDivWidth] = useState(0);
     const [copiedMessage, setCopiedMessage] = useState(""); // State to track copied message
@@ -34,26 +36,44 @@ export default function Home() {
     };
 
     useEffect(() => {
-        const userProfileHeight =
-            document.getElementsByClassName("userProfile")[0]?.clientHeight;
-        const windowInnerHeight = window.innerHeight;
-        const windowInnerWidth = window.innerWidth;
-        const sidebarWidth =
-            document.getElementsByClassName("dashboardSidebar")[0]?.clientWidth;
+        function handleResize() {
+            const userProfileHeight =
+                document.getElementsByClassName("userProfile")[0]?.clientHeight;
+            const windowInnerHeight = window.innerHeight;
+            const windowInnerWidth = window.innerWidth;
+            const sidebarWidth =
+                document.getElementsByClassName("dashboardSidebar")[0]
+                    ?.clientWidth;
 
-        setChatDivHeight(4 + windowInnerHeight - userProfileHeight * 2);
-        setChatDivWidth(windowInnerWidth - sidebarWidth);
+            setChatDivHeight(4 + windowInnerHeight - userProfileHeight * 2);
+            setChatDivWidth(windowInnerWidth - sidebarWidth);
+        }
+
+        handleResize(); // Initial call
+        window.addEventListener("resize", handleResize);
+
+        return () => window.removeEventListener("resize", handleResize);
     }, []);
-
     return (
         <main
             className="flex flex-col items-center inset-0 bg-[#8BE0DB]/10 w-full"
             style={{ height: `${chatDivHeight}px`, width: `${chatDivWidth}px` }}
         >
-            <div className="flex flex-col w-full overflow-y-auto mb-20 p-4">
-                {RenderMessages()}
+            <div className="flex flex-col w-full overflow-y-auto mb-20 p-4 h-full">
+                {chatStarted ? (
+                    RenderMessages()
+                ) : (
+                    <div className="flex m-auto top-1/2 justify-center items-center w-[50%] h-[50%] animate-bounce">
+                        <Image
+                            src="/chat.svg"
+                            alt="Chat Logo"
+                            layout="fill"
+                            objectFit="contain"
+                        />
+                    </div>
+                )}
             </div>
-            <div className="w-full fixed bottom-0 flex justify-center">
+            <div className="w-full bottom-0 flex justify-center">
                 {RenderForm()}
             </div>
         </main>
@@ -64,6 +84,7 @@ export default function Home() {
             <form
                 onSubmit={(event) => {
                     event.preventDefault();
+                    setChatStarted(true);
                     handleSubmit(event, {
                         data: {
                             prompt: input
@@ -76,8 +97,8 @@ export default function Home() {
                     value={input}
                     onChange={(e) => {
                         handleInputChange(e);
-                        e.target.style.height = "auto"; // Reset the height
-                        e.target.style.height = e.target.scrollHeight + "px"; // Set the height to the scroll height
+                        e.target.style.height = "auto";
+                        e.target.style.height = e.target.scrollHeight + "px";
                     }}
                     placeholder={
                         isLoading ? "Generating..." : "Ask me anything..."
